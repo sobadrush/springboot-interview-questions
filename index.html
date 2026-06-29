@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SpringBoot 技術面試</title>
+	<style>
+		:root {
+			--paper: #f7fbfd;
+			--ink: #2f343a;
+			--muted: #6f7780;
+			--line: #e7edf2;
+			--panel: #ffffff;
+			--panel-strong: #eaf6ff;
+			--accent: #0072bc;
+			--accent-strong: #005a9c;
+			--accent-soft: #dff1ff;
+			--low: #f6a23b;
+			--mid: #0082ca;
+			--high: #28bd5c;
+			--danger: #9b2c2c;
+			--green: #8cc63f;
+			--yellow: #f7d36a;
+			--sky: #77b6df;
+			--shadow: 0 14px 32px rgba(0, 55, 99, 0.12);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			background:
+				linear-gradient(160deg, rgba(255, 225, 128, 0.88) 0 23%, transparent 23%),
+				linear-gradient(23deg, rgba(233, 247, 234, 0.72) 0 47%, transparent 47%),
+				linear-gradient(194deg, transparent 0 59%, rgba(205, 238, 250, 0.86) 59%),
+				linear-gradient(117deg, #f7d982 0%, #99d48b 34%, #6fb3db 77%, #5f9fd3 100%);
+			color: var(--ink);
+			font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+			line-height: 1.65;
+			min-height: 100vh;
+		}
+
+		body::before {
+			background: rgba(255, 255, 255, 0.78);
+			clip-path: polygon(0 45%, 100% 20%, 100% 100%, 0 100%);
+			content: "";
+			inset: 0;
+			pointer-events: none;
+			position: fixed;
+			z-index: -1;
+		}
+
+		main {
+			max-width: 1280px;
+			margin: 0 auto;
+			padding: 30px 28px 72px;
+		}
+
+		header {
+			background: rgba(255, 255, 255, 0.96);
+			border: 1px solid #d5e8f7;
+			border-radius: 22px;
+			box-shadow: var(--shadow);
+			margin-bottom: 30px;
+			min-height: 245px;
+			padding: 38px 42px 42px;
+		}
+
+		.kicker {
+			color: var(--accent);
+			font-size: 16px;
+			font-weight: 900;
+			margin: 0 0 18px;
+		}
+
+		h1 {
+			align-items: center;
+			display: flex;
+			flex-wrap: wrap;
+			font-size: clamp(44px, 5vw, 68px);
+			font-weight: 900;
+			gap: 14px;
+			letter-spacing: 0;
+			line-height: 1.15;
+			margin: 0 0 20px;
+		}
+
+		.hero-title {
+			color: var(--accent);
+			display: inline-block;
+			text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
+		}
+
+		.hero-subtitle {
+			background: var(--accent-soft);
+			border-left: 5px solid var(--green);
+			border-radius: 6px;
+			color: var(--accent-strong);
+			display: inline-block;
+			font-size: clamp(18px, 2vw, 24px);
+			font-weight: 900;
+			padding: 6px 12px;
+		}
+
+		.summary {
+			color: var(--muted);
+			font-size: 20px;
+			font-weight: 700;
+			line-height: 1.75;
+			margin: 0;
+			max-width: 940px;
+		}
+
+		section {
+			margin-top: 32px;
+		}
+
+		h2 {
+			align-items: center;
+			display: flex;
+			font-size: 24px;
+			margin: 0 0 14px;
+		}
+
+		h2::before {
+			background: linear-gradient(180deg, var(--green), var(--accent));
+			content: "";
+			display: inline-block;
+			height: 28px;
+			margin-right: 12px;
+			width: 5px;
+		}
+
+		button,
+		input,
+		textarea {
+			font: inherit;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.toolbar,
+		.rubric-card,
+		.question-card {
+			background: var(--panel);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			box-shadow: var(--shadow);
+		}
+
+		.toolbar {
+			display: grid;
+			gap: 16px;
+			grid-template-columns: 1fr auto;
+			padding: 18px;
+		}
+
+		.form-grid {
+			display: grid;
+			gap: 12px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		label {
+			color: var(--muted);
+			display: grid;
+			font-size: 13px;
+			font-weight: 700;
+			gap: 6px;
+		}
+
+		input,
+		textarea {
+			background: #fbfdff;
+			border: 1px solid var(--line);
+			border-radius: 10px;
+			color: var(--ink);
+			padding: 10px 12px;
+			width: 100%;
+		}
+
+		textarea {
+			min-height: 72px;
+			resize: vertical;
+		}
+
+		.actions {
+			align-items: end;
+			display: flex;
+			gap: 10px;
+			justify-content: flex-end;
+		}
+
+		.primary-button,
+		.secondary-button,
+		.answer-button,
+		.rating-button {
+			border-radius: 999px;
+			font-weight: 800;
+			min-height: 40px;
+			padding: 8px 14px;
+		}
+
+		.primary-button {
+			background: var(--accent);
+			border: 1px solid var(--accent);
+			box-shadow: 0 8px 18px rgba(0, 114, 188, 0.24);
+			color: #fff;
+		}
+
+		.secondary-button,
+		.answer-button {
+			background: #fff;
+			border: 1px solid var(--line);
+			color: var(--accent);
+		}
+
+		.example-button {
+			background: var(--accent-soft);
+			border: 1px solid rgba(0, 114, 188, 0.22);
+			color: var(--accent-strong);
+		}
+
+		.export-status {
+			color: var(--muted);
+			font-size: 13px;
+			margin: 8px 0 0;
+			text-align: right;
+		}
+
+		.rubric {
+			display: grid;
+			gap: 14px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.rubric-card {
+			padding: 18px;
+		}
+
+		.level {
+			align-items: center;
+			display: flex;
+			font-weight: 800;
+			gap: 10px;
+			margin-bottom: 8px;
+		}
+
+		.badge {
+			align-items: center;
+			border-radius: 4px;
+			color: #fff;
+			display: inline-flex;
+			font-size: 13px;
+			height: 28px;
+			justify-content: center;
+			min-width: 38px;
+			padding: 0 10px;
+		}
+
+		.badge-low {
+			background: var(--low);
+		}
+
+		.badge-mid {
+			background: var(--mid);
+		}
+
+		.badge-high {
+			background: var(--high);
+		}
+
+		.rubric-card p {
+			margin: 0;
+		}
+
+		.question-list {
+			display: grid;
+			gap: 16px;
+		}
+
+		.question-card {
+			overflow: hidden;
+		}
+
+		.question-card[data-rating="L"] {
+			border-color: var(--low);
+		}
+
+		.question-card[data-rating="M"] {
+			border-color: var(--mid);
+		}
+
+		.question-card[data-rating="H"] {
+			border-color: var(--high);
+		}
+
+		.question-head {
+			background: linear-gradient(90deg, var(--panel-strong), #ffffff);
+			border-bottom: 1px solid var(--line);
+			display: grid;
+			gap: 12px;
+			grid-template-columns: auto 1fr auto auto;
+			padding: 18px 20px;
+		}
+
+		.question-category {
+			align-self: start;
+			background: #fff;
+			border: 1px solid rgba(0, 114, 188, 0.22);
+			border-radius: 999px;
+			box-shadow: 0 8px 18px rgba(0, 114, 188, 0.1);
+			color: var(--accent);
+			font-size: 13px;
+			font-weight: 900;
+			letter-spacing: 0;
+			line-height: 1;
+			padding: 9px 12px;
+			white-space: nowrap;
+		}
+
+		.question-example-button {
+			align-self: start;
+			min-height: 36px;
+			padding: 7px 14px;
+		}
+
+		.number {
+			background: var(--accent);
+			border-radius: 5px;
+			color: #fff;
+			font-weight: 800;
+			height: 36px;
+			line-height: 36px;
+			text-align: center;
+			width: 44px;
+		}
+
+		.question {
+			font-size: 18px;
+			font-weight: 800;
+			margin: 2px 0 0;
+		}
+
+		.intent {
+			color: var(--muted);
+			font-size: 14px;
+			margin: 4px 0 0;
+		}
+
+		.score-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.score-cell {
+			border-right: 1px solid var(--line);
+			padding: 16px 18px 18px;
+		}
+
+		.score-cell:last-child {
+			border-right: 0;
+		}
+
+		.score-cell h3 {
+			font-size: 15px;
+			margin: 0 0 8px;
+		}
+
+		.score-cell p {
+			font-size: 14px;
+			margin: 0;
+		}
+
+		.question-tools {
+			align-items: center;
+			border-top: 1px solid var(--line);
+			display: grid;
+			gap: 14px;
+			grid-template-columns: 1fr auto;
+			padding: 16px 18px;
+		}
+
+		.rating-group {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.rating-button {
+			background: #fff;
+			border: 2px solid var(--line);
+			color: var(--ink);
+			min-width: 58px;
+			position: relative;
+			transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, transform 0.18s ease;
+		}
+
+		.rating-button:hover {
+			box-shadow: 0 10px 20px rgba(0, 114, 188, 0.18);
+			transform: translateY(-2px);
+		}
+
+		.rating-button:active {
+			box-shadow: 0 4px 10px rgba(0, 114, 188, 0.14);
+			transform: translateY(0);
+		}
+
+		.rating-button:focus-visible {
+			outline: 3px solid rgba(0, 130, 202, 0.28);
+			outline-offset: 3px;
+		}
+
+		.rating-button[data-level="L"]:hover {
+			background: rgba(246, 162, 59, 0.14);
+			border-color: var(--low);
+			color: var(--low);
+		}
+
+		.rating-button[data-level="M"]:hover {
+			background: rgba(0, 130, 202, 0.12);
+			border-color: var(--mid);
+			color: var(--mid);
+		}
+
+		.rating-button[data-level="H"]:hover {
+			background: rgba(40, 189, 92, 0.12);
+			border-color: var(--high);
+			color: var(--high);
+		}
+
+		.rating-button[data-level="L"].is-active {
+			background: var(--low);
+			border-color: var(--low);
+			color: #fff;
+		}
+
+		.rating-button[data-level="L"].is-active:hover {
+			box-shadow: 0 12px 24px rgba(246, 162, 59, 0.28);
+			color: #fff;
+		}
+
+		.rating-button[data-level="M"].is-active {
+			background: var(--mid);
+			border-color: var(--mid);
+			color: #fff;
+		}
+
+		.rating-button[data-level="M"].is-active:hover {
+			box-shadow: 0 12px 24px rgba(0, 130, 202, 0.28);
+			color: #fff;
+		}
+
+		.rating-button[data-level="H"].is-active {
+			background: var(--high);
+			border-color: var(--high);
+			color: #fff;
+		}
+
+		.rating-button[data-level="H"].is-active:hover {
+			box-shadow: 0 12px 24px rgba(40, 189, 92, 0.28);
+			color: #fff;
+		}
+
+		.answer {
+			background: #f6fbff;
+			border-top: 1px solid var(--line);
+			display: none;
+			padding: 18px 20px;
+		}
+
+		.answer.is-open {
+			display: block;
+		}
+
+		.answer h3 {
+			font-size: 17px;
+			margin: 0 0 8px;
+		}
+
+		.answer ul {
+			margin: 8px 0 0;
+			padding-left: 22px;
+		}
+
+		.answer li {
+			margin: 4px 0;
+		}
+
+		.note {
+			background: rgba(255, 255, 255, 0.94);
+			border-left: 5px solid var(--accent);
+			border-radius: 12px;
+			box-shadow: var(--shadow);
+			margin-top: 24px;
+			padding: 16px 18px;
+		}
+
+		.note p {
+			margin: 0;
+		}
+
+		.modal-backdrop {
+			align-items: center;
+			background: rgba(15, 35, 52, 0.42);
+			display: none;
+			inset: 0;
+			justify-content: center;
+			padding: 28px;
+			position: fixed;
+			z-index: 20;
+		}
+
+		.modal-backdrop.is-open {
+			display: flex;
+		}
+
+		.modal-panel {
+			background: #fff;
+			border: 1px solid #d5e8f7;
+			border-radius: 20px;
+			box-shadow: 0 24px 60px rgba(0, 55, 99, 0.24);
+			max-height: min(760px, 88vh);
+			max-width: 960px;
+			overflow: hidden;
+			width: min(960px, 100%);
+		}
+
+		.modal-head {
+			align-items: start;
+			background: linear-gradient(90deg, var(--panel-strong), #fff);
+			border-bottom: 1px solid var(--line);
+			display: flex;
+			justify-content: space-between;
+			padding: 22px 24px;
+		}
+
+		.modal-head h2 {
+			margin: 0;
+		}
+
+		.modal-head h2::before {
+			display: none;
+		}
+
+		.modal-kicker {
+			color: var(--accent);
+			font-size: 14px;
+			font-weight: 900;
+			margin: 0 0 4px;
+		}
+
+		.modal-close {
+			background: #2f343a;
+			border: 0;
+			border-radius: 999px;
+			color: #fff;
+			font-size: 26px;
+			font-weight: 900;
+			height: 40px;
+			line-height: 1;
+			width: 40px;
+		}
+
+		.example-code {
+			background: #102437;
+			color: #e8f7ff;
+			font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+			font-size: 14px;
+			line-height: 1.6;
+			margin: 0;
+			max-height: calc(min(760px, 88vh) - 104px);
+			overflow: auto;
+			padding: 22px 24px;
+			white-space: pre;
+		}
+
+		@media (max-width: 900px) {
+			main {
+				padding: 20px 16px 48px;
+			}
+
+			header {
+				padding: 24px 20px;
+			}
+
+			.hero-subtitle {
+				margin-bottom: 8px;
+			}
+
+			.toolbar,
+			.question-tools {
+				grid-template-columns: 1fr;
+			}
+
+			.form-grid,
+			.rubric,
+			.score-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.actions {
+				justify-content: flex-start;
+			}
+
+			.score-cell {
+				border-bottom: 1px solid var(--line);
+				border-right: 0;
+			}
+
+			.score-cell:last-child {
+				border-bottom: 0;
+			}
+
+			.question-head {
+				grid-template-columns: auto 1fr;
+			}
+
+			.question-category,
+			.question-example-button {
+				grid-column: 2;
+				justify-self: start;
+			}
+		}
+
+		@media print {
+			body {
+				background: #fff;
+			}
+
+			main {
+				max-width: none;
+				padding: 18mm;
+			}
+
+			.toolbar,
+			.rubric-card,
+			.question-card {
+				box-shadow: none;
+				page-break-inside: avoid;
+			}
+
+			.answer {
+				display: block;
+			}
+
+			.actions,
+			.answer-button {
+				display: none;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<header>
+			<p class="kicker">Spring Boot 面試評估表｜Spring Boot 技術面試題庫</p>
+			<h1>
+				<span class="hero-title">SpringBoot 技術面試</span>
+			</h1>
+			<p class="summary">
+				本評估表聚焦於此專案實際使用到的 Spring Boot、Spring MVC、Spring Data JPA、Transaction、Filter / AOP、外部 HTTP Client、Mock 測試、Java Stream、Design Pattern 與大流量架構判斷。面試官可逐題展開解答、標記 L/M/H，並匯出評分結果備查。
+			</p>
+		</header>
+
+		<section aria-labelledby="export-title">
+			<h2 id="export-title">評分紀錄</h2>
+			<div class="toolbar">
+				<div class="form-grid">
+					<label>
+						候選人
+						<input id="candidateName" type="text" placeholder="例如：王小明">
+					</label>
+					<label>
+						面試官
+						<input id="interviewerName" type="text" placeholder="例如：Tech Lead">
+					</label>
+					<label>
+						整體備註
+						<textarea id="overallNote" placeholder="例如：Spring 基礎佳，架構取捨需追問"></textarea>
+					</label>
+				</div>
+				<div>
+					<div class="actions">
+						<button class="secondary-button" type="button" id="clearRatings">清除標記</button>
+						<button class="primary-button" type="button" id="exportResult">匯出結果</button>
+					</div>
+					<p class="export-status" id="exportStatus">尚未匯出</p>
+				</div>
+			</div>
+		</section>
+
+		<section aria-labelledby="rubric-title">
+			<h2 id="rubric-title">面試官評分建議</h2>
+			<div class="rubric">
+				<article class="rubric-card">
+					<div class="level"><span class="badge badge-low">L</span>理論派，實務經驗不足</div>
+					<p>只知道問題名稱或相關術語，無法說出可落地的解法，也無法連結到此專案中的程式碼情境。</p>
+				</article>
+				<article class="rubric-card">
+					<div class="level"><span class="badge badge-mid">M</span>具備基礎，需要磨練</div>
+					<p>能說出一種解法，知道基本用法，但缺少錯誤處理、測試、維護成本、專案規模等取捨判斷。</p>
+				</article>
+				<article class="rubric-card">
+					<div class="level"><span class="badge badge-high">H</span>有工程判斷力，值得加分</div>
+					<p>能提出多種解法並比較優劣，且能判斷此作業規模適合哪一種做法，不會過度設計也不會忽略風險。</p>
+				</article>
+			</div>
+		</section>
+
+		<section aria-labelledby="questions-title">
+			<h2 id="questions-title">面試問題</h2>
+			<div class="question-list">
+				<article class="question-card" data-question-id="Q01">
+					<div class="question-head">
+						<div class="number">01</div>
+						<div>
+							<p class="question">請說明 Spring 的 DI 與 AOP 是什麼？常見注入方式有哪些？你會如何選擇？</p>
+							<p class="intent">觀察重點：是否理解 IoC 容器、依賴注入、AOP proxy，以及 constructor / setter / field injection 的取捨</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 DI 是注入、AOP 是切面，或只會背 `@Autowired`，但無法說明 Spring 容器與 proxy 的角色。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明 constructor、setter、field injection 的基本差異，也知道 AOP 可做 logging、transaction 等橫切邏輯。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能明確主張 constructor injection 為預設選擇，說出測試性、不可變性、循環依賴、proxy 自呼叫等實務限制。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>DI 是 Dependency Injection，由 Spring IoC 容器負責建立 Bean、管理生命週期，並把相依物件注入進需要它的類別</li>
+							<li>AOP 是 Aspect-Oriented Programming，透過 proxy 在方法呼叫前後加入橫切邏輯，例如 transaction、logging、audit、metrics、權限檢查</li>
+							<li>constructor injection：適合必要依賴，能讓欄位設為 `final`，測試容易，也能在建立物件時暴露缺少依賴的問題，通常是首選</li>
+							<li>setter injection：適合可選依賴或需要後續調整的設定，但物件可能短暫處於依賴不完整狀態</li>
+							<li>field injection：寫法短，但測試不易、隱藏依賴、難以建立不可變物件，正式專案通常不建議作為預設做法</li>
+							<li>AOP 要注意 Spring proxy 限制：同類別自呼叫通常不會觸發 advice，private method 不是典型切點，非 Spring 管理物件也不會被攔截</li>
+							<li>以此作業來看，Controller 依賴 Repository 或未來的 Service 時，建議改用 constructor injection；交易與日誌等橫切邏輯再考慮 AOP</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q02">
+					<div class="question-head">
+						<div class="number">02</div>
+						<div>
+							<p class="question">為什麼 `@Autowired CurrencyRepository` 可以直接進行 DB 操作？</p>
+							<p class="intent">觀察重點：是否理解 Spring Data JPA proxy、Repository bean 與 DI</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 Spring 會自動注入，但不知道 `JpaRepository` 的實作從何而來。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明 Spring Data JPA 會根據介面產生 repository 實作，並能使用命名查詢方法。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能進一步說明 proxy、交易邊界、repository 測試替換，以及 controller 直接依賴 repository 的維護取捨。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`CurrencyRepository` 繼承 `JpaRepository`，Spring Data JPA 會在啟動時建立 proxy 實作</li>
+							<li>`findByCurrencyCode` 會依 Spring Data method name query 規則產生查詢</li>
+							<li>Repository 可直接操作資料，但正式業務流程通常會由 Service 定義交易與業務規則邊界</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q03">
+					<div class="question-head">
+						<div class="number">03</div>
+						<div>
+							<p class="question">`CurrencyTypeVO` 中 `@Entity`、`@Id`、`@Transient` 的用途是什麼？</p>
+							<p class="intent">觀察重點：是否理解 JPA entity mapping 與 API 回傳欄位的界線</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只能說這些是 JPA annotation，但無法解釋持久化欄位與非持久化欄位差異。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明 `@Entity` 對應資料表、`@Id` 是主鍵、`@Transient` 不寫入 DB。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能指出 Entity 混入 API 暫態欄位雖然在作業規模可接受，但正式系統可考慮 DTO 分離以降低耦合。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`@Entity` 與 `@Table` 讓 `CurrencyTypeVO` 對應 `CURRENCY_TYPE` 資料表</li>
+							<li>`@Id` 與 `@GeneratedValue` 定義主鍵與產生策略</li>
+							<li>`updatedDateTimeStr`、`exchangeRate` 是 API 組合結果，使用 `@Transient` 避免被 JPA 視為資料表欄位</li>
+							<li>規模變大時，建議 Entity 與 response DTO 分離，避免資料庫模型被 API 需求污染</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q04">
+					<div class="question-head">
+						<div class="number">04</div>
+						<div>
+							<p class="question">如果幣別新增與外部匯率查詢要組成同一個業務流程，Transaction 應該怎麼設計？</p>
+							<p class="intent">觀察重點：是否理解 `@Transactional` 邊界、rollback 規則與外部 API 不應被包進長交易</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道要加 `@Transactional`，但不知道應該加在哪一層或 rollback 條件。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明交易通常放在 Service layer，DB 多步驟操作應同一個交易完成。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能指出外部 HTTP 呼叫不宜放在長交易中，會拉長 DB lock 時間；能比較先呼叫外部 API 再交易寫 DB、或用補償機制的取捨。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`@Transactional` 建議放在 Service 方法，而不是 Controller，讓業務流程與交易邊界一致</li>
+							<li>多個 DB 寫入或讀寫一致性要求高的操作應在同一交易內，查詢可考慮 `readOnly = true`</li>
+							<li>外部 API 呼叫可能 timeout 或變慢，不適合包在 DB 交易中，否則會延長連線與 lock 持有時間</li>
+							<li>Checked exception 預設不 rollback，必要時要設定 `rollbackFor`，也要避免同類別自呼叫造成 transaction proxy 失效</li>
+							<li>此作業規模可先抽 Service 並讓 DB 寫入由交易包住；外部查詢失敗時回傳明確錯誤即可，不需過度導入分散式交易</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q05">
+					<div class="question-head">
+						<div class="number">05</div>
+						<div>
+							<p class="question">`@RestController` 與 `@Controller` 的差異是什麼？為什麼這裡用 `@RestController`？</p>
+							<p class="intent">觀察重點：是否理解 JSON API 與 MVC view rendering 的差異</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 `@RestController` 會回傳 JSON，但不知道與 `@ResponseBody` 的關係。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明 `@RestController` 等同 `@Controller` 加上 `@ResponseBody`，適合此專案 REST API。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能補充 API contract、HTTP status、錯誤格式與 JSP controller 分離的取捨。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`@Controller` 預設走 MVC view resolver，常用於回傳 JSP 或 template view</li>
+							<li>`@RestController` 等同 `@Controller` 加 `@ResponseBody`，方法回傳值會直接序列化成 response body</li>
+							<li>此專案多數 endpoint 是 JSON API，因此使用 `@RestController` 合理</li>
+							<li>若同時有 JSP 頁面與 API，建議分開 controller 邊界，避免 API 與 view rendering 混雜</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q06">
+					<div class="question-head">
+						<div class="number">06</div>
+						<div>
+							<p class="question">POST、PUT、PATCH 在 `CurrencyTypeMaintainController` 中的語意差異是什麼？</p>
+							<p class="intent">觀察重點：是否理解 REST 語意、idempotency 與目前實作行為</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只會背 POST 新增、PUT 修改、PATCH 部分修改。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能看出 PUT 找不到資料時會新增，PATCH 只更新非空欄位。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能討論 REST 語意、idempotency、404 或 upsert 的設計選擇，並依作業規模判斷是否需要完整狀態碼規範。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>POST 通常表示新增資源，不要求 idempotent</li>
+							<li>PUT 通常表示以完整內容取代指定資源，語意上應 idempotent；此專案找不到資料時會新增，接近 upsert</li>
+							<li>PATCH 表示部分更新，此專案只更新非空的 `currencyCode` 與 `currencyName`</li>
+							<li>正式 API 應明確決定 PUT 找不到時回 404、建立新資料、或限制只能更新，並搭配對應 HTTP status</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q07">
+					<div class="question-head">
+						<div class="number">07</div>
+						<div>
+							<p class="question">Controller 直接呼叫 `CurrencyRepository` 有什麼優缺點？</p>
+							<p class="intent">觀察重點：是否能判斷 Service layer 的必要性與過度設計風險</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道可以運作，或只回答「應該加 Service」但說不出原因。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明缺少 Service layer 會讓 controller 責任變重，測試與維護較不方便。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能比較此作業規模下直接呼叫 repository 的簡潔性，以及業務邏輯增加時引入 Service、Facade 或 Adapter 的時機。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>優點是簡單、檔案少，對 CRUD 作業或面試作業容易理解</li>
+							<li>缺點是 Controller 同時處理 HTTP、業務流程、資料存取，責任容易變重</li>
+							<li>一旦有交易、驗證、外部 API、錯誤轉換、快取等需求，Service layer 會更容易測試與維護</li>
+							<li>此作業目前直接用 repository 尚可，但資料轉換與外部呼叫邏輯已經開始適合抽成 Service 或 Client adapter</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q08">
+					<div class="question-head">
+						<div class="number">08</div>
+						<div>
+							<p class="question">如果使用 OKHttp3 HttpClient 呼叫 CoinDesk API，應該注意哪些設計與資源管理問題？</p>
+							<p class="intent">觀察重點：是否理解 `OkHttpClient` reuse、timeout、response close、錯誤處理與測試替身</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 OKHttp3 可以發 HTTP request，但不知道 client 與 response 的生命週期。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明要設定 connect/read/write timeout，且 `Response` 需要正確 close。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能比較 singleton `OkHttpClient`、connection pool、interceptor、MockWebServer、錯誤映射與此作業規模下的封裝方式。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`OkHttpClient` 應重用，通常作為 singleton bean，避免每次 request 都重建 connection pool 與 thread pool</li>
+							<li>必須設定 timeout，避免外部 API 卡住拖垮 servlet thread</li>
+							<li>`Response` 或 response body 要用 try-with-resources 關閉，避免連線無法回收到 pool</li>
+							<li>應處理非 2xx status、JSON parse error、timeout、DNS 或連線失敗，並映射成明確的應用錯誤</li>
+							<li>可用 interceptor 放 logging、header、trace id；測試可用 OkHttp `MockWebServer` 模擬 CoinDesk</li>
+							<li>此作業規模下，最合適的是抽出 `CoinDeskClient`，內部使用重用的 `OkHttpClient`，先不需要複雜熔斷框架</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q09">
+					<div class="question-head">
+						<div class="number">09</div>
+						<div>
+							<p class="question">目前例外處理回傳 `null` 或直接丟 `RuntimeException` 有什麼問題？</p>
+							<p class="intent">觀察重點：是否理解 HTTP API 錯誤語意與統一錯誤回應</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道可能會出錯，但無法說明對 API 使用者造成什麼影響。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說明應回傳合理 HTTP status，例如 404、400、500，而不是讓呼叫端收到模糊結果。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能設計 `@ControllerAdvice`、domain exception、統一錯誤格式，並判斷此作業可先補基本狀態碼與訊息即可。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>回傳 `null` 會讓呼叫端難以判斷是查無資料、外部 API 失敗還是系統錯誤</li>
+							<li>直接丟 generic `RuntimeException` 會導致錯誤語意不清，預設錯誤內容也可能不符合 API contract</li>
+							<li>可用 `@ControllerAdvice` 統一處理例外，回傳固定格式，例如 errorCode、message、timestamp</li>
+							<li>查無資料可回 404，輸入不合法回 400，外部 API 失敗可視情境回 502 或 503</li>
+							<li>此作業可先補基本 status 與 message，不必先導入完整錯誤碼治理</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q10">
+					<div class="question-head">
+						<div class="number">10</div>
+						<div>
+							<p class="question">這個專案若要補 mock 測試，你會 mock 哪些依賴？怎麼避免測試依賴 localhost 與真實 CoinDesk API？</p>
+							<p class="intent">觀察重點：是否理解 Mockito、MockMvc、`@MockBean`、MockWebServer 與測試邊界</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 mock 是假的物件，但說不出此專案應 mock 什麼。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說出 controller test 可 mock repository 或 service，外部 API 不應打真實網路。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能分層設計 `@WebMvcTest`、`@DataJpaTest`、MockWebServer 或 stub client，並依此作業規模選擇最小有效測試組合。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>Controller 層可用 `MockMvc` 發 request，不需要啟動真實 localhost server</li>
+							<li>Controller 測試可用 `@WebMvcTest` 搭配 `@MockBean` mock service 或 repository</li>
+							<li>Repository 層可用 `@DataJpaTest` 驗證 JPA mapping 與 query method</li>
+							<li>CoinDesk 外部 API 不應在測試打真實網路，可抽成 `CoinDeskClient` 後用 Mockito stub，或用 OKHttp `MockWebServer` 模擬 HTTP response</li>
+							<li>此作業最小有效組合：repository 測試驗證 DB 查詢、controller 使用 MockMvc 驗證路由與 response、外部 API client 使用 MockWebServer 驗證成功與失敗情境</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q11">
+					<div class="question-head">
+						<div class="number">11</div>
+						<div>
+							<p class="question">如果這個匯率查詢 API 面對大流量，你會如何調整系統架構？</p>
+							<p class="intent">觀察重點：是否能從快取、限流、水平擴充、資料庫與外部 API 韌性做工程取捨</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只會回答加機器或加快取，但說不出瓶頸在哪裡。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說出快取、DB index、connection pool、timeout、水平擴充等基本方向。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能先判斷讀多寫少與外部 API 依賴特性，再比較本機快取、Redis、排程同步、限流、熔斷與降級的適用時機。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>先判斷瓶頸：此 API 多半是讀多寫少，主要風險是每次 request 都打 CoinDesk 與 DB</li>
+							<li>可用短 TTL 快取匯率資料，避免高流量時每次都呼叫外部 API；單機可先用 Caffeine，分散式可用 Redis</li>
+							<li>可用排程定期同步 CoinDesk 匯率到快取或 DB，線上查詢走本地資料，降低外部 API 延遲與失敗影響</li>
+							<li>需要設定 HTTP timeout、connection pool、限流、熔斷與 fallback，避免外部服務拖垮自身服務</li>
+							<li>DB 端要確認索引、連線池與查詢模式；服務端可做水平擴充，前方搭配 load balancer</li>
+							<li>此作業規模最適合先做 short TTL cache、timeout、明確錯誤回應；不需要一開始就導入完整微服務或訊息佇列</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q12">
+					<div class="question-head">
+						<div class="number">12</div>
+						<div>
+							<p class="question">請說明 `java.util.stream` 的優點，並示範如何用 Stream 對 `List&lt;Policy&gt;` 依保單號 `policyNum` 分組、攤平成集合，以及用 `Collectors.toMap` 保留原始順序。</p>
+							<p class="intent">觀察重點：是否理解 Stream pipeline、`map`/`flatMap`/`groupingBy`/`toMap`、重複 key 與順序保留</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道 Stream 可做迴圈簡化，或只會背 `map` 名稱，但無法寫出分組或 `toMap` 實作。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能寫出 `groupingBy`、`map`、`flatMap` 的基本用法，但對重複 key、順序保留、null 與可讀性取捨掌握不足。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能完整說明 Stream 適用情境與限制，能用 `LinkedHashMap` 保留順序、處理 duplicate key，並能判斷何時傳統迴圈更清楚。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>Stream 優點是能以宣告式 pipeline 表達轉換、過濾、分組、彙總，適合集合資料處理，也容易串接 `filter`、`map`、`collect`</li>
+							<li>依保單號分組可使用：`policies.stream().collect(Collectors.groupingBy(Policy::getPolicyNum))`，回傳 `Map&lt;String, List&lt;Policy&gt;&gt;`</li>
+							<li>若要讓分組結果保留第一次遇到的保單號順序，可使用：`Collectors.groupingBy(Policy::getPolicyNum, LinkedHashMap::new, Collectors.toList())`</li>
+							<li>`map` 是一對一轉換，例如 `policies.stream().map(Policy::getPolicyNum)`；`flatMap` 是一對多後攤平，例如 `groups.stream().flatMap(group -&gt; group.getPolicies().stream())`</li>
+							<li>`toMap` 若要保留原始順序，需指定 map supplier：`Collectors.toMap(Policy::getPolicyNum, Function.identity(), (first, second) -&gt; first, LinkedHashMap::new)`</li>
+							<li>`toMap` 要注意 duplicate key 會拋 `IllegalStateException`，因此要明確提供 merge function；也要注意 key/value 是否可能為 null</li>
+							<li>工程判斷上，Stream 適合中短鏈路資料轉換；若邏輯分支多、副作用多、debug 困難，傳統迴圈或拆小方法可能更清楚</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q13">
+					<div class="question-head">
+						<div class="number">13</div>
+						<div>
+							<p class="question">請分享你在專案中使用 Design Pattern 的經驗；若要改善此作業的外部匯率 API 與資料轉換流程，你會考慮哪些模式？</p>
+							<p class="intent">觀察重點：是否能從實際問題選擇模式，而不是只背 GoF 名稱或過度設計</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只能列出 Singleton、Factory、Strategy 等名稱，但無法說明實際使用場景或解決什麼問題。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能說出一兩個模式的用途，例如 Strategy 處理規則切換、Adapter 包裝外部 API，但缺少取捨與專案規模判斷。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能用此作業舉例說明 Adapter、Facade、Strategy、Template Method 的適用時機，也能指出目前規模不必硬套完整模式。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>Design Pattern 的價值是處理穩定出現的變更軸，例如多種外部 API、多種轉換規則、多種輸出格式，而不是為了讓程式看起來複雜</li>
+							<li>此作業可用 Adapter 封裝 CoinDesk API，例如 `CoinDeskClient` 隔離 OKHttp3、URL、timeout、錯誤轉換與 JSON 格式</li>
+							<li>可用 Facade 對 Controller 提供簡化入口，例如 `CurrencyRateFacade` 組合 DB 幣別查詢、外部匯率查詢與 response 組裝</li>
+							<li>若未來有多個匯率來源或不同轉換規則，可用 Strategy，例如 `ExchangeRateProvider` 或 `CurrencyRateConverter`</li>
+							<li>若多個外部 API 流程都有固定骨架，例如呼叫、驗證、轉換、錯誤映射，可考慮 Template Method，但目前作業規模可能還不需要</li>
+							<li>工程判斷上，現在最務實的是先抽 Service 與 Client adapter；等第二個外部來源或第二種轉換規則出現，再導入 Strategy 會更合理</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="question-card" data-question-id="Q14">
+					<div class="question-head">
+						<div class="number">14</div>
+						<div>
+							<p class="question">Spring 中 middleware、Filter、Interceptor 與 AOP 的區別是什麼？你會如何選擇使用時機？</p>
+							<p class="intent">觀察重點：是否理解請求生命週期、Servlet Filter、Spring MVC Interceptor、AOP proxy 與橫切關注點邊界</p>
+						</div>
+					</div>
+					<div class="score-grid">
+						<div class="score-cell"><h3><span class="badge badge-low">L</span></h3><p>只知道它們都可以做攔截或前後處理，但說不出執行位置、作用範圍與限制。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-mid">M</span></h3><p>能分辨 Filter 在 Servlet 層、Interceptor 在 Spring MVC 層、AOP 在 Bean method 層，但選型取捨較粗略。</p></div>
+						<div class="score-cell"><h3><span class="badge badge-high">H</span></h3><p>能依情境選擇：安全與 request wrapping 用 Filter、Controller 前後處理用 Interceptor、service 橫切邏輯用 AOP，並能指出 proxy、自呼叫與順序問題。</p></div>
+					</div>
+					<div class="question-tools"></div>
+					<div class="answer">
+						<h3>參考解答</h3>
+						<ul>
+							<li>`middleware` 在 Spring 裡通常是泛稱，可能指 HTTP request pipeline 中的 Filter / Interceptor，也可能泛指橫切處理元件，面試時要先釐清語境</li>
+							<li>`Filter` 是 Servlet 規格層級，進入 Spring MVC 前就會執行，適合 CORS、安全驗證前置、request / response wrapping、編碼、trace id 等低層 HTTP 處理</li>
+							<li>`HandlerInterceptor` 是 Spring MVC 層級，已經進入 Spring DispatcherServlet，可在 controller 前後做處理，適合登入狀態檢查、controller 層級 logging、locale、簡單權限檢查</li>
+							<li>`AOP` 是 Spring Bean method 層級，透過 proxy 攔截方法呼叫，適合 transaction、service method logging、audit、metrics、權限註解等業務方法橫切關注點</li>
+							<li>執行順序大致是：Filter → DispatcherServlet → Interceptor → Controller → Service / AOP proxy → 回程 Interceptor → 回程 Filter</li>
+							<li>AOP 要注意 proxy 限制：同類別自呼叫通常不會觸發 advice，非 Spring 管理物件也不會被攔截，private method 也不是典型 AOP 切點</li>
+							<li>此作業規模若要加 request logging 或 trace id，可用 Filter；若要統一記錄 controller 耗時可用 Interceptor；若要記錄 service 業務操作或交易邊界，才考慮 AOP</li>
+						</ul>
+					</div>
+				</article>
+			</div>
+
+			<div class="note">
+				<p>建議使用方式：面試時先讓候選人回答「會怎麼做」，再追問「還有沒有其他做法」與「以這份作業規模你會選哪一種」。能說出取捨，比單純背出框架名稱更有鑑別度。</p>
+			</div>
+		</section>
+	</main>
+
+	<div class="modal-backdrop" id="exampleModal" aria-hidden="true">
+		<div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="exampleModalTitle">
+			<div class="modal-head">
+				<div>
+					<p class="modal-kicker">Java Stream 例題資料</p>
+					<h2 id="exampleModalTitle">List&lt;PolicyInfo&gt; policyList</h2>
+				</div>
+				<button class="modal-close" type="button" id="closeExampleModal" aria-label="關閉例題">×</button>
+			</div>
+			<pre class="example-code"><code>List&lt;PolicyInfo&gt; policyList = policyCachedService.getPolicies();
+
+---
+json 來源範例資料如下：
+[
+    {
+        "policyNumber": "00000001100121399",
+        "policyNum10": "1100121399",
+        "agent": "0000530541",
+        "brokerBpId": "",
+        "contractNumber": "11000000000032692",
+        "coverageNumber": "10000000000289429",
+        "insured": "0000754845",
+        "insuredName": "葉大雄",
+        "insuredNationalId": "Q208554207",
+        "policyHolder": "0000756249",
+        "policyHolderName": "鄒秀緹"
+    },
+    ...
+    ...
+]</code></pre>
+		</div>
+	</div>
+
+	<script>
+		const LEVEL_LABELS = {
+			L: "理論派，實務經驗不足",
+			M: "具備基礎，需要磨練",
+			H: "有工程判斷力，值得加分"
+		};
+
+		const INTERVIEW_FLOW_ORDER = [
+			"Q01",
+			"Q05",
+			"Q06",
+			"Q03",
+			"Q02",
+			"Q07",
+			"Q04",
+			"Q14",
+			"Q08",
+			"Q09",
+			"Q10",
+			"Q12",
+			"Q13",
+			"Q11"
+		];
+
+		const QUESTION_CATEGORIES = {
+			Q01: "Spring 核心",
+			Q02: "資料存取",
+			Q03: "資料模型",
+			Q04: "交易設計",
+			Q05: "Web API",
+			Q06: "REST 設計",
+			Q07: "分層設計",
+			Q08: "外部整合",
+			Q09: "錯誤處理",
+			Q10: "測試設計",
+			Q11: "架構",
+			Q12: "開發技術",
+			Q13: "設計模式",
+			Q14: "Spring 攔截"
+		};
+
+		function reorderQuestionCards() {
+			const questionList = document.querySelector(".question-list");
+			const cardByOriginalId = new Map(
+				Array.from(document.querySelectorAll(".question-card")).map((card) => [card.dataset.questionId, card])
+			);
+			const orderedCards = INTERVIEW_FLOW_ORDER
+				.map((questionId) => cardByOriginalId.get(questionId))
+				.filter(Boolean);
+
+			orderedCards.forEach((card, index) => {
+				const newNumber = String(index + 1).padStart(2, "0");
+				card.dataset.originalQuestionId = card.dataset.questionId;
+				card.dataset.questionId = `Q${newNumber}`;
+				card.dataset.category = QUESTION_CATEGORIES[card.dataset.originalQuestionId] || "綜合";
+				card.querySelector(".number").textContent = newNumber;
+				card.querySelector(".question-category")?.remove();
+				const category = document.createElement("span");
+				category.className = "question-category";
+				category.textContent = card.dataset.category;
+				card.querySelector(".question-head").appendChild(category);
+				card.querySelector(".question-example-button")?.remove();
+				if (card.dataset.originalQuestionId === "Q12") {
+					const exampleButton = document.createElement("button");
+					exampleButton.className = "answer-button example-button question-example-button";
+					exampleButton.type = "button";
+					exampleButton.textContent = "例題";
+					exampleButton.addEventListener("click", openExampleModal);
+					card.querySelector(".question-head").appendChild(exampleButton);
+				}
+				questionList.appendChild(card);
+			});
+
+			return orderedCards;
+		}
+
+		const cards = reorderQuestionCards();
+		const exportStatus = document.getElementById("exportStatus");
+
+		function getQuestionText(card) {
+			return card.querySelector(".question").textContent.trim();
+		}
+
+		function getIntentText(card) {
+			return card.querySelector(".intent").textContent.replace("觀察重點：", "").trim();
+		}
+
+		function setRating(card, level) {
+			card.dataset.rating = level;
+			card.querySelectorAll(".rating-button").forEach((button) => {
+				button.classList.toggle("is-active", button.dataset.level === level);
+				button.setAttribute("aria-pressed", button.dataset.level === level ? "true" : "false");
+			});
+		}
+
+		function buildQuestionTools(card) {
+			const tools = card.querySelector(".question-tools");
+			const questionId = card.dataset.questionId;
+			tools.innerHTML = `
+				<div>
+					<div class="rating-group" aria-label="${questionId} 評分">
+						<button class="rating-button" type="button" data-level="L" aria-pressed="false">L</button>
+						<button class="rating-button" type="button" data-level="M" aria-pressed="false">M</button>
+						<button class="rating-button" type="button" data-level="H" aria-pressed="false">H</button>
+					</div>
+					<label style="margin-top: 10px;">
+						本題備註
+						<textarea class="question-note" placeholder="記錄候選人的回答重點、追問結果或風險"></textarea>
+					</label>
+				</div>
+				<div class="actions">
+					<button class="answer-button" type="button" data-action="toggle-answer" aria-expanded="false">看解答</button>
+				</div>
+			`;
+
+			tools.querySelectorAll(".rating-button").forEach((button) => {
+				button.addEventListener("click", () => {
+					setRating(card, button.dataset.level);
+					exportStatus.textContent = `已標記 ${questionId}：${button.dataset.level}`;
+				});
+			});
+
+			tools.querySelector('[data-action="toggle-answer"]').addEventListener("click", (event) => {
+				const answer = card.querySelector(".answer");
+				const isOpen = answer.classList.toggle("is-open");
+				event.currentTarget.textContent = isOpen ? "隱藏解答" : "看解答";
+				event.currentTarget.setAttribute("aria-expanded", isOpen ? "true" : "false");
+			});
+		}
+
+		function collectResult() {
+			return {
+				title: "Spring Boot 技術面試問題評分表",
+				candidateName: document.getElementById("candidateName").value.trim(),
+				interviewerName: document.getElementById("interviewerName").value.trim(),
+				overallNote: document.getElementById("overallNote").value.trim(),
+				exportedAt: new Date().toISOString(),
+				questions: cards.map((card) => {
+					const selectedLevel = card.dataset.rating || "";
+					return {
+						id: card.dataset.questionId,
+						originalId: card.dataset.originalQuestionId || card.dataset.questionId,
+						category: card.dataset.category || "",
+						question: getQuestionText(card),
+						intent: getIntentText(card),
+						selectedLevel,
+						selectedLevelLabel: selectedLevel ? LEVEL_LABELS[selectedLevel] : "",
+						note: card.querySelector(".question-note").value.trim(),
+						answerExpanded: card.querySelector(".answer").classList.contains("is-open")
+					};
+				})
+			};
+		}
+
+		function escapeHtml(value) {
+			return String(value || "")
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
+		}
+
+		function renderExportHtml(result) {
+			const ratedCount = result.questions.filter((item) => item.selectedLevel).length;
+			const questionRows = result.questions.map((item) => `
+				<article class="question-card rating-${escapeHtml(item.selectedLevel || "none")}">
+					<div class="question-top">
+						<span class="number">${escapeHtml(item.id.replace("Q", ""))}</span>
+						<div>
+							<div class="meta">
+								<span>${escapeHtml(item.category)}</span>
+								<span>${escapeHtml(item.selectedLevel || "未標記")}</span>
+								<span>${item.answerExpanded ? "解答已展開" : "解答未展開"}</span>
+							</div>
+							<h2>${escapeHtml(item.question)}</h2>
+							<p>${escapeHtml(item.intent)}</p>
+						</div>
+					</div>
+					<div class="note-block">
+						<strong>本題備註</strong>
+						<p>${escapeHtml(item.note || "未填寫")}</p>
+					</div>
+				</article>
+			`).join("");
+
+			return `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${escapeHtml(result.title)} - 匯出紀錄</title>
+	<style>
+		body { margin: 0; background: #f7fbfd; color: #2f343a; font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; line-height: 1.65; }
+		main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 64px; }
+		header, .summary, .question-card { background: #fff; border: 1px solid #dbeaf4; border-radius: 18px; box-shadow: 0 12px 28px rgba(0, 55, 99, 0.1); }
+		header { padding: 30px 34px; margin-bottom: 20px; }
+		h1 { color: #0072bc; font-size: 42px; margin: 0 0 10px; }
+		.subtitle { color: #6f7780; font-size: 16px; margin: 0; }
+		.summary { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 20px; padding: 18px; }
+		.summary div { background: #eaf6ff; border-radius: 12px; padding: 14px; }
+		.summary span { color: #6f7780; display: block; font-size: 13px; font-weight: 800; }
+		.summary strong { color: #2f343a; display: block; font-size: 18px; margin-top: 4px; word-break: break-word; }
+		.question-list { display: grid; gap: 14px; }
+		.question-card { overflow: hidden; }
+		.question-top { background: linear-gradient(90deg, #eaf6ff, #fff); display: grid; gap: 14px; grid-template-columns: auto 1fr; padding: 18px 20px; }
+		.number { align-items: center; background: #0072bc; border-radius: 8px; color: #fff; display: inline-flex; font-size: 18px; font-weight: 900; height: 44px; justify-content: center; width: 52px; }
+		.meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+		.meta span { border: 1px solid #cfe2f3; border-radius: 999px; color: #0072bc; font-size: 13px; font-weight: 900; padding: 4px 10px; }
+		.question-card h2 { font-size: 20px; margin: 0 0 6px; }
+		.question-card p { color: #6f7780; margin: 0; }
+		.note-block { border-top: 1px solid #e7edf2; padding: 16px 20px; }
+		.note-block strong { color: #2f343a; display: block; margin-bottom: 6px; }
+		.rating-L { border-color: #f6a23b; }
+		.rating-M { border-color: #0082ca; }
+		.rating-H { border-color: #28bd5c; }
+		@media (max-width: 760px) { .summary { grid-template-columns: 1fr; } h1 { font-size: 32px; } }
+	</style>
+</head>
+<body>
+	<main>
+		<header>
+			<h1>SpringBoot 技術面試紀錄</h1>
+			<p class="subtitle">匯出時間：${escapeHtml(new Date(result.exportedAt).toLocaleString("zh-TW"))}</p>
+		</header>
+		<section class="summary">
+			<div><span>候選人</span><strong>${escapeHtml(result.candidateName || "未填寫")}</strong></div>
+			<div><span>面試官</span><strong>${escapeHtml(result.interviewerName || "未填寫")}</strong></div>
+			<div><span>已標記題數</span><strong>${ratedCount} / ${result.questions.length}</strong></div>
+			<div><span>整體備註</span><strong>${escapeHtml(result.overallNote || "未填寫")}</strong></div>
+		</section>
+		<section class="question-list">
+			${questionRows}
+		</section>
+	</main>
+</body>
+</html>`;
+		}
+
+		function downloadResult() {
+			const result = collectResult();
+			const exportHtml = renderExportHtml(result);
+			const blob = new Blob([exportHtml], { type: "text/html;charset=utf-8" });
+			const url = URL.createObjectURL(blob);
+			const candidate = result.candidateName || "candidate";
+			const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = `springboot-interview-result-${candidate}-${timestamp}.html`;
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			URL.revokeObjectURL(url);
+			exportStatus.textContent = `已匯出 HTML：${result.questions.filter((item) => item.selectedLevel).length}/${result.questions.length} 題標記`;
+		}
+
+		function clearRatings() {
+			cards.forEach((card) => {
+				card.removeAttribute("data-rating");
+				card.querySelectorAll(".rating-button").forEach((button) => {
+					button.classList.remove("is-active");
+					button.setAttribute("aria-pressed", "false");
+				});
+				card.querySelector(".question-note").value = "";
+			});
+			exportStatus.textContent = "已清除所有題目標記";
+		}
+
+		function openExampleModal() {
+			const modal = document.getElementById("exampleModal");
+			modal.classList.add("is-open");
+			modal.setAttribute("aria-hidden", "false");
+			document.getElementById("closeExampleModal").focus();
+		}
+
+		function closeExampleModal() {
+			const modal = document.getElementById("exampleModal");
+			modal.classList.remove("is-open");
+			modal.setAttribute("aria-hidden", "true");
+		}
+
+		cards.forEach(buildQuestionTools);
+		document.getElementById("exportResult").addEventListener("click", downloadResult);
+		document.getElementById("clearRatings").addEventListener("click", clearRatings);
+		document.getElementById("closeExampleModal").addEventListener("click", closeExampleModal);
+		document.getElementById("exampleModal").addEventListener("click", (event) => {
+			if (event.target.id === "exampleModal") {
+				closeExampleModal();
+			}
+		});
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape") {
+				closeExampleModal();
+			}
+		});
+	</script>
+</body>
+</html>
